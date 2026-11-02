@@ -2,18 +2,21 @@ import { html } from 'hono/html'
 import { APP_KEYWORDS } from '../constants.js';
 
 export const Layout = (props) => {
-  const { title, children } = props
+  const { title, description, keywords, lang = 'en', children } = props
+  const metaDescription = description || 'Convert and optimize your subscription links easily'
   return html`
     <!DOCTYPE html>
-    <html lang="en" x-data="appData()">
+    <html lang="${lang}" x-data="appData()">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>${title}</title>
-        <meta name="description" content="Convert and optimize your subscription links easily" />
-        <meta name="keywords" content="${APP_KEYWORDS}" />
+        <meta name="description" content="${metaDescription}" />
+        <meta name="keywords" content="${keywords || APP_KEYWORDS}" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>

@@ -6,6 +6,9 @@ import { Navbar } from '../components/Navbar.jsx';
 import { Form } from '../components/Form.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { UpdateChecker } from '../components/UpdateChecker.jsx';
+import { LandingPage } from '../components/LandingPage.jsx';
+import { NotFoundPage } from '../components/NotFoundPage.jsx';
+import { getLandingCopy } from '../i18n/landing.js';
 import { SingboxConfigBuilder } from '../builders/SingboxConfigBuilder.js';
 import { ClashConfigBuilder } from '../builders/ClashConfigBuilder.js';
 import { SurgeConfigBuilder } from '../builders/SurgeConfigBuilder.js';
@@ -38,14 +41,25 @@ export function createApp(bindings = {}) {
     });
 
     app.get('/', (c) => {
+        const lang = resolveLanguage(c.get('lang'));
+        const copy = getLandingCopy(lang);
+
+        return c.html(
+            <Layout title={copy.pageTitle} description={copy.pageDescription} lang={lang}>
+                <LandingPage lang={lang} />
+            </Layout>
+        );
+    });
+
+    app.get('/app', (c) => {
         const t = c.get('t');
         const lang = resolveLanguage(c.get('lang'));
         const subtitle = APP_SUBTITLE[lang] || APP_SUBTITLE['zh-CN'];
 
         return c.html(
-            <Layout title={t('pageTitle')} description={t('pageDescription')} keywords={t('pageKeywords')}>
+            <Layout title={t('pageTitle')} description={t('pageDescription')} keywords={t('pageKeywords')} lang={lang}>
                 <div class="flex flex-col min-h-screen">
-                    <Navbar />
+                    <Navbar current="converter" />
                     <main class="flex-1">
                         <div class="container mx-auto px-4 py-8 pt-24">
                             <div class="max-w-4xl mx-auto">
@@ -398,14 +412,27 @@ export function createApp(bindings = {}) {
 
     app.get('/favicon.ico', async (c) => {
         if (!runtime.assetFetcher) {
-            return c.notFound();
+            // Bypass app.notFound so browsers get an empty image response, not an HTML page.
+            return c.body(null, 404);
         }
         try {
             return await runtime.assetFetcher(c.req.raw);
         } catch (error) {
             runtime.logger.warn('Asset fetch failed', error);
-            return c.notFound();
+            return c.body(null, 404);
         }
+    });
+
+    app.notFound((c) => {
+        const lang = resolveLanguage(c.get('lang'));
+        const copy = getLandingCopy(lang);
+
+        return c.html(
+            <Layout title={`404 - ${copy.pageTitle}`} description={copy.notFoundDesc} lang={lang}>
+                <NotFoundPage lang={lang} path={c.req.path} />
+            </Layout>,
+            404
+        );
     });
 
     return app;
