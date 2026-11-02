@@ -132,6 +132,15 @@ describe('subhub admin routes', () => {
         expect(await res.text()).toContain('Missing config parameter');
     });
 
+    it('links to the admin panel from the landing navbar', async () => {
+        const app = createTestApp();
+        const res = await app.request('http://localhost/', {}, env());
+        const html = await res.text();
+
+        expect(res.status).toBe(200);
+        expect(html).toContain('href="/admin"');
+    });
+
     it('reads data written by the D1 migration snapshot', async () => {
         const kv = new MemoryKVAdapter();
         await kv.put(ADMIN_STATE_KEY, JSON.stringify({

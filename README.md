@@ -71,7 +71,7 @@ The same Worker now hosts the Sub-Hub management panel and its storage, so one d
 | `/<path>/xray` | Raw links for Xray |
 
 - Admin credentials come from the `ADMIN_USERNAME` / `ADMIN_PASSWORD` secrets. Set them with `npx wrangler secret put ADMIN_USERNAME` (secrets survive deployments, unlike plain vars).
-- `ADMIN_PATH` in `wrangler.toml` sets the panel prefix.
+- The panel path defaults to `/admin`; set the `ADMIN_PATH` variable only if you need a different prefix.
 - Subscription data lives in KV under `subhub:v1:db`; `scripts/migrate-d1-to-kv.mjs` produces that key from a D1 database.
 - Subscription paths must match `^[a-z0-9-]{5,50}$` and may not use `admin`, `clash`, `surge`, `singbox`, `xray`, `resolve`, `config`, `shorten-v2`, `favicon.ico`, `s`, `b`, `c`, `x` — those stay reserved for existing routes.
 
