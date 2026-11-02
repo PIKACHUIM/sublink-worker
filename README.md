@@ -4,7 +4,7 @@
   <h1><b>Sublink Worker</b></h1>
   <h5><i>One Worker, All Subscriptions</i></h5>
 
-  <p><b>A lightweight subscription converter and manager for proxy protocols, deployable on Cloudflare Workers, Vercel, Node.js, or Docker.</b></p>
+  <p><b>A lightweight subscription converter and manager for proxy protocols, deployable on Cloudflare Workers, Tencent EdgeOne, Aliyun ESA, Vercel, Node.js, or Docker.</b></p>
 
   <a href="https://trendshift.io/repositories/12291" target="_blank">
     <img src="https://trendshift.io/api/badge/repositories/12291" alt="7Sageer%2Fsublink-worker | Trendshift" width="250" height="55"/>
@@ -45,6 +45,39 @@
 - **Vercel**: `vercel deploy` (configure KV in project settings)
 - **Docker**: `docker pull ghcr.io/7sageer/sublink-worker:latest`
 - **Docker Compose**: `docker compose up -d` (includes Redis)
+
+## Edge Platforms
+
+### Tencent EdgeOne Makers Functions
+
+Import this repository as an EdgeOne Makers project. `edge-functions/index.js` serves `/`; `edge-functions/[[default]].js` handles the remaining routes.
+
+- **KV**: bind an EdgeOne KV namespace as `SUBLINK_KV` and set `STORAGE_BACKEND=kv` (the default).
+- **Blob**: set `STORAGE_BACKEND=edgeone-blob`; optionally set `EDGEONE_BLOB_STORE` (default: `sublink-worker`).
+- Connect the project to the repository for automatic builds, or use the EdgeOne Makers deployment flow.
+
+### Alibaba Cloud ESA Edge Functions
+
+Build a single-file ESA function bundle, then upload `dist/aliyun-esa.js` as an Edge Function and publish a tested version through the ESA console:
+
+```bash
+npm ci
+npm run build:esa
+```
+
+Create an ESA EdgeKV namespace and set `STORAGE_BACKEND=kv` plus `SUBLINK_KV_NAMESPACE` to its name.
+
+### Storage Configuration
+
+| Platform | `STORAGE_BACKEND` | Required binding/configuration |
+| --- | --- | --- |
+| Cloudflare Workers | `kv` | Existing `SUBLINK_KV` binding |
+| EdgeOne Makers Functions | `kv` or `edgeone-blob` | `SUBLINK_KV` binding, or optional `EDGEONE_BLOB_STORE` |
+| Aliyun ESA Edge Functions | `kv` | Existing `SUBLINK_KV_NAMESPACE` EdgeKV namespace |
+
+`STORAGE_BACKEND` defaults to `kv`. `edgeone-blob` is supported only on EdgeOne. Switching providers/backends does not migrate existing data; migrate records separately before switching.
+
+`CONFIG_TTL_SECONDS` defaults to 30 days and `SHORT_LINK_TTL_SECONDS` is unset by default. EdgeOne KV, EdgeOne Blob, and ESA EdgeKV do not provide the same native TTL behavior as Cloudflare KV; the adapter enforces expiry on reads, while expired records remain stored and may need manual cleanup. EdgeOne KV and ESA EdgeKV are eventually consistent across edge nodes; ESA EdgeKV may take up to 300 seconds to propagate writes. EdgeOne Blob reads use strong consistency. ESA EdgeKV values are limited to 1.8 MB.
 
 ## ✨ Features
 
