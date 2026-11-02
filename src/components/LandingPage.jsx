@@ -57,7 +57,7 @@ export const LandingPage = ({ lang }) => {
         <div class="hud min-h-screen" dir={dir}>
             <style dangerouslySetInnerHTML={{ __html: HUD_STYLES }} />
             <div class="hud-grid-bg" aria-hidden="true"></div>
-            <Navbar current="landing" />
+            <Navbar current="landing" lang={lang} />
 
             <main class="relative z-10">
                 {/* Hero: asymmetric split, terminal panel carries the contrast */}

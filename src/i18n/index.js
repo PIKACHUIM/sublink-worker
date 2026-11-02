@@ -4,6 +4,10 @@ import { checkStartsWith } from "../utils.js";
 // 定义语言包
 export const translations = {
   'zh-CN': {
+    navOverview: '概览',
+    navConverter: '转换器',
+    navDocs: '文档',
+    navAdmin: '后台',
     enableClashUI: '启用 Clash API',
     enableClashUITip: '在 SingBox 配置中启用 Clash API (支持 Dashboard 面板)，默认端口 9090',
     externalController: '外部控制端口',
@@ -167,6 +171,10 @@ export const translations = {
     later: '稍后'
   },
   'en-US': {
+    navOverview: 'OVERVIEW',
+    navConverter: 'CONVERTER',
+    navDocs: 'Docs',
+    navAdmin: 'Admin',
     enableClashUI: 'Enable Clash API',
     enableClashUITip: 'Enable Clash API in SingBox config (Support Dashboard), default port 9090',
     externalController: 'External Controller',
@@ -329,6 +337,10 @@ export const translations = {
     later: 'Later'
   },
   'fa': {
+    navOverview: 'نمای کلی',
+    navConverter: 'مبدل',
+    navDocs: 'مستندات',
+    navAdmin: 'مدیریت',
     missingInput: 'پارامتر ورودی وجود ندارد',
     missingConfig: 'پارامتر پیکربندی وجود ندارد',
     missingUrl: 'پارامتر URL وجود ندارد',
@@ -485,6 +497,10 @@ export const translations = {
     later: 'بعداً'
   },
   'ru': {
+    navOverview: 'ОБЗОР',
+    navConverter: 'КОНВЕРТЕР',
+    navDocs: 'Документация',
+    navAdmin: 'Админка',
     missingInput: 'Отсутствует входной параметр',
     missingConfig: 'Отсутствует параметр конфигурации',
     missingUrl: 'Отсутствует параметр URL',

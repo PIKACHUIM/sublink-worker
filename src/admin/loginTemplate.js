@@ -421,7 +421,8 @@ font-family: var(--font-ui);
     const moonIcon = \`${SVG_ICONS.moon}\`;
 
     function initTheme() {
-      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const savedTheme = localStorage.getItem('theme')
+        || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
     }

@@ -1390,6 +1390,10 @@ export function renderAdminPanel({ adminPath, converterBackendsJson }) {
       <button class="btn-theme" onclick="toggleTheme()" title="切换主题">
         <span id="themeIcon">${SVG_ICONS.moon}</span>
       </button>
+      <a href="/" class="btn-theme" title="返回前台" style="width:auto;padding:0 12px;gap:6px;text-decoration:none;">
+        ${SVG_ICONS.cube}
+        <span style="font-size:13px;">前台</span>
+      </a>
       <a href="/${adminPath}/logout" class="btn-logout">
         ${SVG_ICONS.logout}
         <span>退出</span>
@@ -1694,7 +1698,8 @@ Base64编码格式
 
     // 主题切换功能
     function initTheme() {
-      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const savedTheme = localStorage.getItem('theme')
+        || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
     }

@@ -1,11 +1,7 @@
 /** @jsxRuntime automatic */
 /** @jsxImportSource hono/jsx */
 import { APP_NAME, APP_VERSION, GITHUB_REPO, DOCS_URL } from '../constants.js';
-
-const NAV_LINKS = [
-    { key: 'landing', href: '/', label: 'OVERVIEW' },
-    { key: 'converter', href: '/app', label: 'CONVERTER' }
-];
+import { createTranslator } from '../i18n/index.js';
 
 const linkClass = (active, display) =>
     [
@@ -16,7 +12,12 @@ const linkClass = (active, display) =>
             : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
     ].join(' ');
 
-export const Navbar = ({ current } = {}) => {
+export const Navbar = ({ current, lang } = {}) => {
+    const t = createTranslator(lang);
+    const navLinks = [
+        { key: 'landing', href: '/', label: t('navOverview') },
+        { key: 'converter', href: '/app', label: t('navConverter') }
+    ];
     return (
         <nav class="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800 z-50 transition-all duration-300">
             <div class="container mx-auto px-4">
@@ -30,7 +31,7 @@ export const Navbar = ({ current } = {}) => {
                     </a>
                     <div class="flex items-center gap-1 md:gap-2">
                         <div class="flex items-center gap-1 mr-1">
-                            {NAV_LINKS.map((link) => (
+                            {navLinks.map((link) => (
                                 <a
                                     href={link.href}
                                     // Keep the converter reachable on phones, where the overview link is redundant.
@@ -51,7 +52,7 @@ export const Navbar = ({ current } = {}) => {
                             class="px-2 md:px-3 py-2 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
                         >
                             <i class="fas fa-book"></i>
-                            <span class="hidden md:inline">Docs</span>
+                            <span class="hidden md:inline">{t('navDocs')}</span>
                         </a>
                         <a
                             href={GITHUB_REPO}
@@ -68,7 +69,7 @@ export const Navbar = ({ current } = {}) => {
                             aria-label="Subscription admin panel"
                         >
                             <i class="fas fa-user-shield"></i>
-                            <span class="hidden md:inline">Admin</span>
+                            <span class="hidden md:inline">{t('navAdmin')}</span>
                         </a>
                         <button
                             class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"

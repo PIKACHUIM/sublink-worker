@@ -13,7 +13,7 @@ export const NotFoundPage = ({ lang, path = '/' }) => {
         <div class="hud flex min-h-screen flex-col" dir={dir}>
             <style dangerouslySetInnerHTML={{ __html: HUD_STYLES }} />
             <div class="hud-grid-bg" aria-hidden="true"></div>
-            <Navbar />
+            <Navbar lang={lang} />
 
             <main class="relative z-10 flex flex-1 items-center">
                 <div class="mx-auto w-full max-w-7xl px-4 py-24 md:px-6">

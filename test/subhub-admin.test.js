@@ -139,6 +139,28 @@ describe('subhub admin routes', () => {
 
         expect(res.status).toBe(200);
         expect(html).toContain('href="/admin"');
+        expect(html).toContain('概览');
+        expect(html).toContain('后台');
+    });
+
+    it('localises the navbar labels', async () => {
+        const app = createTestApp();
+        const res = await app.request('http://localhost/', { headers: { 'Accept-Language': 'en-US' } }, env());
+        const html = await res.text();
+
+        expect(html).toContain('OVERVIEW');
+        expect(html).toContain('Admin');
+    });
+
+    it('applies the shared theme to the admin panel', async () => {
+        const app = createTestApp();
+        const { cookie } = await login(app);
+
+        const panel = await app.request('http://localhost/admin', { headers: { Cookie: cookie } }, env());
+        const html = await panel.text();
+
+        expect(html).toContain("--font-ui: 'Inter'");
+        expect(html).toContain('prefers-color-scheme: dark');
     });
 
     it('reads data written by the D1 migration snapshot', async () => {

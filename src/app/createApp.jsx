@@ -61,7 +61,7 @@ export function createApp(bindings = {}) {
         return c.html(
             <Layout title={t('pageTitle')} description={t('pageDescription')} keywords={t('pageKeywords')} lang={lang}>
                 <div class="flex flex-col min-h-screen">
-                    <Navbar current="converter" />
+                    <Navbar current="converter" lang={lang} />
                     <main class="flex-1">
                         <div class="container mx-auto px-4 py-8 pt-24">
                             <div class="max-w-4xl mx-auto">

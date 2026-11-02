@@ -4,6 +4,7 @@ import { SurgeConfigBuilder } from '../builders/SurgeConfigBuilder.js';
 import { decodeBase64, encodeBase64 } from '../utils.js';
 import { renderLoginPage } from './loginTemplate.js';
 import { renderAdminPanel } from './panelTemplate.js';
+import { applyAdminTheme } from './theme.js';
 import {
     SubhubAdminStore,
     normalizeNodeInput,
@@ -164,7 +165,7 @@ export function createSubhubHandler(runtime) {
 
         if (pathname === `${adminBase}/login`) {
             if (method === 'GET') {
-                return new Response(renderLoginPage({ adminPath }), { headers: panelHeaders() });
+                return new Response(applyAdminTheme(renderLoginPage({ adminPath })), { headers: panelHeaders() });
             }
             if (method === 'POST') {
                 const { username, password } = await readJson(request);
@@ -209,10 +210,10 @@ export function createSubhubHandler(runtime) {
 
         if (pathname === adminBase) {
             return new Response(
-                renderAdminPanel({
+                applyAdminTheme(renderAdminPanel({
                     adminPath,
                     converterBackendsJson: JSON.stringify(CONVERTER_BACKENDS)
-                }),
+                })),
                 { headers: panelHeaders() }
             );
         }
