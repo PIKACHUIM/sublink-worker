@@ -4,14 +4,14 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const KV_NAMESPACE = 'SUBLINK_KV';
-const WORKER_NAME = 'sublink-worker'
-const KV_NAMESPACE_NAME = `${WORKER_NAME}-${KV_NAMESPACE}`;
-const LEGACY_KV_NAMESPACE_NAME = `${WORKER_NAME}-${WORKER_NAME}-${KV_NAMESPACE}`;  // 历史遗留的命名空间名称
-const FALLBACK_KV_NAMESPACE_NAME = KV_NAMESPACE; // 早期账号里只叫 SUBLINK_KV
+const KV_NAMESPACE_NAME = 'sublinks-kvdb';
+const LEGACY_KV_NAMESPACE_NAME = 'sublink-worker-SUBLINK_KV';
+const PREVIOUS_LEGACY_KV_NAMESPACE_NAME = 'sublink-worker-sublink-worker-SUBLINK_KV';
+const FALLBACK_KV_NAMESPACE_NAME = 'SUBLINK_KV';
 const SUPPORTED_TITLES = [
   KV_NAMESPACE_NAME,
   LEGACY_KV_NAMESPACE_NAME,
+  PREVIOUS_LEGACY_KV_NAMESPACE_NAME,
   FALLBACK_KV_NAMESPACE_NAME
 ];
 const WRANGLER_CONFIG_PATH = path.join(__dirname, '..', 'wrangler.toml');
@@ -97,7 +97,7 @@ function createKvNamespace() {
   console.log(`创建KV namespace "${KV_NAMESPACE_NAME}"...`);
 
   try {
-    const output = runWranglerCommand(`kv namespace create "${KV_NAMESPACE}"`, true);
+    const output = runWranglerCommand(`kv namespace create "${KV_NAMESPACE_NAME}"`, true);
     // 尝试从输出中提取ID
     const idMatch = output.match(/id\s*=\s*"([^"]+)"/);
     if (idMatch) {
