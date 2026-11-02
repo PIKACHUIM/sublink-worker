@@ -14,6 +14,7 @@ import {
     subscriptionKey
 } from '../src/adapters/kv/subhubStore.js';
 
+export const SUBHUB_STATE_KEY = 'subhub:v1:db';
 const DEFAULT_DATABASE = 'worklink-data';
 const DEFAULT_NAMESPACE_ID = '953fcf4d7b8148fc88f438203bf863cf';
 
@@ -155,6 +156,17 @@ function buildSnapshot(subscriptions, nodes, sessions, source) {
         checksum: checksum(data)
     };
 
+    const state = {
+        schemaVersion: 1,
+        seq: {
+            subscriptions: subscriptions.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0),
+            nodes: nodes.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0)
+        },
+        subscriptions,
+        nodes,
+        sessions
+    };
+
     return {
         meta,
         records: [
@@ -164,6 +176,10 @@ function buildSnapshot(subscriptions, nodes, sessions, source) {
             {
                 key: SUBHUB_SUBSCRIPTIONS_INDEX_KEY,
                 value: JSON.stringify(subscriptions.map((subscription) => subscription.path))
+            },
+            {
+                key: SUBHUB_STATE_KEY,
+                value: JSON.stringify(state)
             }
         ]
     };
@@ -251,7 +267,7 @@ async function main() {
             `KV already has a different snapshot (${existing.checksum}). Re-run with --force only if you intend to replace it.`
         );
     }
-    if (existing && existing.checksum === snapshot.meta.checksum) {
+    if (existing && existing.checksum === snapshot.meta.checksum && !options.force) {
         console.log('KV already contains an identical snapshot; verifying without rewriting.');
         const verification = verifyRemote(options.namespaceId, snapshot.meta);
         if (!verification.ok) {
