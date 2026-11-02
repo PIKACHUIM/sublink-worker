@@ -10,3 +10,8 @@ kv_namespaces = [
 
 [assets]
 directory = "./public"
+
+# Keep this table last: TOML puts every following bare key inside it.
+[vars]
+# Panel lives at /admin; ADMIN_USERNAME/ADMIN_PASSWORD are Worker secrets.
+ADMIN_PATH = "admin"

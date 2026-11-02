@@ -55,6 +55,26 @@
 - **Docker**: `docker pull ghcr.io/7sageer/sublink-worker:latest`
 - **Docker Compose**: `docker compose up -d` (includes Redis)
 
+## Subscription Admin Panel
+
+The same Worker now hosts the Sub-Hub management panel and its storage, so one deployment covers both conversion and subscription management.
+
+| Path | Purpose |
+| --- | --- |
+| `/admin` | Panel (login required) |
+| `/admin/api/*` | Panel API used by the page |
+| `/<path>` | Stored subscription, raw links |
+| `/<path>/v2ray` | Base64 subscription |
+| `/<path>/clash` | Clash YAML built by this project's converter |
+| `/<path>/surge` | Surge config |
+| `/<path>/singbox` | Sing-Box JSON |
+| `/<path>/xray` | Raw links for Xray |
+
+- Admin credentials come from the `ADMIN_USERNAME` / `ADMIN_PASSWORD` secrets. Set them with `npx wrangler secret put ADMIN_USERNAME` (secrets survive deployments, unlike plain vars).
+- `ADMIN_PATH` in `wrangler.toml` sets the panel prefix.
+- Subscription data lives in KV under `subhub:v1:db`; `scripts/migrate-d1-to-kv.mjs` produces that key from a D1 database.
+- Subscription paths must match `^[a-z0-9-]{5,50}$` and may not use `admin`, `clash`, `surge`, `singbox`, `xray`, `resolve`, `config`, `shorten-v2`, `favicon.ico`, `s`, `b`, `c`, `x` — those stay reserved for existing routes.
+
 ## Edge Platforms
 
 ### Tencent EdgeOne Makers Functions

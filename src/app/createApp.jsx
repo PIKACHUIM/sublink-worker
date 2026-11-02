@@ -20,6 +20,7 @@ import { ConfigStorageService } from '../services/configStorageService.js';
 import { ServiceError, MissingDependencyError } from '../services/errors.js';
 import { normalizeRuntime } from '../runtime/runtimeConfig.js';
 import { PREDEFINED_RULE_SETS, SING_BOX_CONFIG, SING_BOX_CONFIG_V1_11, generateSubconverterConfig } from '../config/index.js';
+import { createSubhubHandler } from '../admin/routes.js';
 
 const DEFAULT_USER_AGENT = 'curl/7.74.0';
 
@@ -31,6 +32,7 @@ export function createApp(bindings = {}) {
     };
 
     const app = new Hono();
+    const handleSubhubRequest = createSubhubHandler(runtime);
 
     app.use('*', async (c, next) => {
         const acceptLanguage = getRequestHeader(c.req, 'Accept-Language');
@@ -421,6 +423,14 @@ export function createApp(bindings = {}) {
             runtime.logger.warn('Asset fetch failed', error);
             return c.body(null, 404);
         }
+    });
+
+    // Subscription admin (Sub-Hub panel) runs after every fixed route so that
+    // /clash, /surge, /admin-like reserved names keep the converter behaviour.
+    app.use('*', async (c, next) => {
+        const response = await handleSubhubRequest(c);
+        if (response) return response;
+        await next();
     });
 
     app.notFound((c) => {
